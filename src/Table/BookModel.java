@@ -1,7 +1,10 @@
 package Table;
 
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,31 +17,8 @@ public class BookModel extends AbstractTableModel {
 
     public BookModel() {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            File file = new File("library.txt");
-            //создаем объект FileReader для объекта File
-            FileReader fr = new FileReader(file);
-            BufferedReader reader = new BufferedReader(fr);
-            // считаем сначала первую строку
-            String line = reader.readLine();
-            while (line != null) {
-                StringTokenizer stok = new StringTokenizer(line, "#");
-                try {
-                    books.add(new Book(stok.nextToken(),
-                            new Author(stok.nextToken(), stok.nextToken(), Gender.valueOf(stok.nextToken())),
-                            new Publisher(stok.nextToken(), formatter.parse(stok.nextToken())),
-                            Double.valueOf(stok.nextToken()), Integer.valueOf(stok.nextToken())));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                line = reader.readLine();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BooksFileReader task = new BooksFileReader(books);
+        task.execute();
     }
 
     public Book getBook(int i){
@@ -112,10 +92,12 @@ public class BookModel extends AbstractTableModel {
     }
 
     public void deleteBook(int[] selectedRows) {
+        int k=0;
         for (int i:
                 selectedRows) {
 
-            books.remove(i);
+            books.remove(i-k);
+            k++;
             fireTableDataChanged();
         }
     }
@@ -128,43 +110,13 @@ public class BookModel extends AbstractTableModel {
 
     public void save() {
 
-        File fileSafe = new File("library.txt");
-        FileWriter fr = null;
-
-        try {
-            fr = new FileWriter(fileSafe);
-            for (Book book:books) {
-
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(book.getName()).append("#");
-                stringBuilder.append(book.getAuthor().getName()).append("#");
-                stringBuilder.append(book.getAuthor().getEmail()).append("#");
-                stringBuilder.append(book.getAuthor().getGender().toString()).append("#");
-                stringBuilder.append(book.getPublisher().getName()).append("#");
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                stringBuilder.append(formatter.format(book.getPublisher().getDate())).append("#");
-                stringBuilder.append(book.getPrice()).append("#");
-                stringBuilder.append(book.getQty());
-
-                String data = stringBuilder.toString();
-
-                fr.write(data);
-                fr.write('\n');
-
-            }
-
-            fr.write('E');
+        BooksFileWriter task = new BooksFileWriter(books);
+        task.execute();
 
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            try {
-                fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    }
 
+    public void editBook(int row, Book book) {
+        books.add(row,book);
     }
 }

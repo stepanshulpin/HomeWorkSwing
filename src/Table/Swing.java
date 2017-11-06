@@ -21,9 +21,9 @@ public class Swing extends JFrame {
         JTable table=new JTable(m);
         JScrollPane jScrollPane=new JScrollPane(table);
         add(jScrollPane);
-        JButton btn1= new JButton("Add");
-        JButton btn2= new JButton("Delete");
-        JButton btn3= new JButton("Save");
+        JButton btnAdd= new JButton("Add");
+        JButton btnDelete= new JButton("Delete");
+        JButton btnSave= new JButton("Save");
 
         table.addMouseListener(new MouseAdapter()
         {
@@ -33,35 +33,31 @@ public class Swing extends JFrame {
                 {
                     Point p = e.getPoint();
                     int row = table.rowAtPoint(p);
-                    int[] rows = {row};
                     Edit edit = new Edit(Swing.this,m.getBook(row));
                     edit.setVisible (true);
                     Book book = edit.getBook();
                     if(book!=null) {
-                        m.deleteBook(rows);
-                        m.addBook(edit.getBook());
+                        m.editBook(row,edit.getBook());
                     }
-                    //int column = table.columnAtPoint(p);
-                    System.out.println("Double click on " + row + " row");
                 }
             }
         });
 
-        btn3.addActionListener(new ActionListener() {
+        btnSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 m.save();
             }
         });
 
-        btn2.addActionListener(new ActionListener() {
+        btnDelete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 m.deleteBook(table.getSelectedRows());
         }
         });
 
-        btn1.addActionListener(new ActionListener() {
+        btnAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Dialog dialog = new Dialog(Swing.this);
@@ -71,13 +67,13 @@ public class Swing extends JFrame {
                     m.addBook(dialog.getBook());
             }
         });
-        JPanel grid = new JPanel(new GridLayout(1,3,1,1));
-        grid.add(btn1);
-        grid.add(btn2);
-        grid.add(btn3);
+        JPanel gridButtons = new JPanel(new GridLayout(1,3,1,1));
+        gridButtons.add(btnAdd);
+        gridButtons.add(btnDelete);
+        gridButtons.add(btnSave);
         JPanel flow = new JPanel(new FlowLayout(
                 FlowLayout.RIGHT ));
-        flow.add(grid);
+        flow.add(gridButtons);
         add(flow, BorderLayout.SOUTH );
         setVisible(true);
     }

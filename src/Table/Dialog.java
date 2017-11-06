@@ -10,21 +10,21 @@ import java.util.GregorianCalendar;
 
 public class Dialog extends JDialog {
 
-    private JPanel rootPanel = new JPanel(new BorderLayout());
-    private JTextArea text0 = new JTextArea();
-    private JTextArea text1 = new JTextArea();
-    private JTextArea text2 = new JTextArea();
-    private JTextArea text3 = new JTextArea();
-    private JTextArea text4 = new JTextArea();
-    private JTextArea text5 = new JTextArea();
-    private JTextArea text6 = new JTextArea();
-    private JTextArea text7 = new JTextArea();
-    private JButton btn = new JButton("OK");
-    private JFrame par;
+    protected JPanel rootPanel = new JPanel(new BorderLayout());
+    protected JTextArea textBookName = new JTextArea();
+    protected JTextArea textAuthorName = new JTextArea();
+    protected JTextArea textAuthorEmail = new JTextArea();
+    protected JTextArea textAuthorGender = new JTextArea();
+    protected JTextArea textPublisherName = new JTextArea();
+    protected JTextArea textPublisherDate = new JTextArea();
+    protected JTextArea textBookPrice = new JTextArea();
+    protected JTextArea textBookQty = new JTextArea();
+    protected JButton btnOk = new JButton("OK");
+    protected JFrame par;
     public Dialog(JFrame parent) {
         super(parent, "Add", true);
         par=parent;
-        btn.addActionListener(new ActionListener() {
+        btnOk.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Dialog.this.dispose();
             }
@@ -39,32 +39,31 @@ public class Dialog extends JDialog {
         grid.add(new JLabel("Date:"));
         grid.add(new JLabel("Price:"));
         grid.add(new JLabel("Quantity:"));
-        grid.add(text0);
-        grid.add(text1);
-        grid.add(text2);
-        grid.add(text3);
-        grid.add(text4);
-        grid.add(text5);
-        grid.add(text6);
-        grid.add(text7);
+        grid.add(textBookName);
+        grid.add(textAuthorName);
+        grid.add(textAuthorEmail);
+        grid.add(textAuthorGender);
+        grid.add(textPublisherName);
+        grid.add(textPublisherDate);
+        grid.add(textBookPrice);
+        grid.add(textBookQty);
         rootPanel.add(grid, BorderLayout.CENTER);
-        rootPanel.add(btn, BorderLayout.SOUTH);
+        rootPanel.add(btnOk, BorderLayout.SOUTH);
         pack();
         setLocationRelativeTo(parent);
     }
     public Book getBook() {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            if(Double.valueOf(text6.getText())<0) throw new NumberFormatException();
-            if(Integer.valueOf(text7.getText())<0) throw new NumberFormatException();
-            return new Book(text0.getText(),
-                    new Author(text1.getText(), text2.getText(), Gender.valueOf(text3.getText())),
-                    new Publisher(text4.getText(), formatter.parse(text5.getText())),
-                    Double.valueOf(text6.getText()), Integer.valueOf(text7.getText()));
+            if(Double.valueOf(textBookPrice.getText())<0) throw new NumberFormatException();
+            if(Integer.valueOf(textBookQty.getText())<0) throw new NumberFormatException();
+            return new Book(textBookName.getText(),
+                    new Author(textAuthorName.getText(), textAuthorEmail.getText(), Gender.valueOf(textAuthorGender.getText())),
+                    new Publisher(textPublisherName.getText(), formatter.parse(textPublisherDate.getText())),
+                    Double.valueOf(textBookPrice.getText()), Integer.valueOf(textBookQty.getText()));
         }
         catch (ParseException ex)
         {
-            System.out.println("Here");
             Error er = new Error(par,"Incorrect date");
             er.setVisible(true);
         }
