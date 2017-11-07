@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 public class Edit extends Dialog {
 
     public Edit(JFrame parent, Book book) {
-        super(parent);
+        super(parent,"Edit");
         textBookName.setText(book.getName());
         textAuthorName.setText(book.getAuthor().getName());
         textAuthorEmail.setText(book.getAuthor().getEmail());

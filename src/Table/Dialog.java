@@ -20,13 +20,43 @@ public class Dialog extends JDialog {
     protected JTextArea textBookPrice = new JTextArea();
     protected JTextArea textBookQty = new JTextArea();
     protected JButton btnOk = new JButton("OK");
-    protected JFrame par;
-    public Dialog(JFrame parent) {
-        super(parent, "Add", true);
-        par=parent;
+    public Dialog(JFrame parent, String title) {
+        super(parent, title, true);
         btnOk.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Dialog.this.dispose();
+
+                boolean canDispose=true;
+
+                try {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    if(Double.valueOf(textBookPrice.getText())<0) throw new NumberFormatException();
+                    if(Integer.valueOf(textBookQty.getText())<0) throw new NumberFormatException();
+                    formatter.parse(textPublisherDate.getText());
+                    Gender.valueOf(textAuthorGender.getText());
+                }
+                catch (ParseException ex)
+                {
+                    canDispose=false;
+                    Error er = new Error(Dialog.this,"Incorrect date");
+                    er.setVisible(true);
+                }
+                catch (NumberFormatException ex)
+                {
+                    canDispose=false;
+                    Error er = new Error(Dialog.this,"Incorrect price or quantity");
+                    er.setVisible(true);
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    canDispose=false;
+                    Error er = new Error(Dialog.this,"Incorrect gender");
+                    er.setVisible(true);
+                }
+
+
+                if(canDispose) {
+                    Dialog.this.dispose();
+                }
             }
         });
         this.getContentPane().add(rootPanel);
@@ -50,33 +80,20 @@ public class Dialog extends JDialog {
         rootPanel.add(grid, BorderLayout.CENTER);
         rootPanel.add(btnOk, BorderLayout.SOUTH);
         pack();
+        setResizable(false);
         setLocationRelativeTo(parent);
     }
     public Book getBook() {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            if(Double.valueOf(textBookPrice.getText())<0) throw new NumberFormatException();
-            if(Integer.valueOf(textBookQty.getText())<0) throw new NumberFormatException();
             return new Book(textBookName.getText(),
                     new Author(textAuthorName.getText(), textAuthorEmail.getText(), Gender.valueOf(textAuthorGender.getText())),
                     new Publisher(textPublisherName.getText(), formatter.parse(textPublisherDate.getText())),
                     Double.valueOf(textBookPrice.getText()), Integer.valueOf(textBookQty.getText()));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        catch (ParseException ex)
-        {
-            Error er = new Error(par,"Incorrect date");
-            er.setVisible(true);
-        }
-        catch (NumberFormatException ex)
-        {
-            Error er = new Error(par,"Incorrect price or quantity");
-            er.setVisible(true);
-        }
-        catch (IllegalArgumentException ex)
-        {
-            Error er = new Error(par,"Incorrect gender");
-            er.setVisible(true);
-        }
+
         return null;
     }
 

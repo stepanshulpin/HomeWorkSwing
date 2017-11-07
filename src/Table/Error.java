@@ -10,7 +10,7 @@ public class Error extends JDialog {
     private JLabel label;
     private JButton btn = new JButton("OK");
 
-    public Error(JFrame parent, String msg) {
+    public Error(JDialog parent, String msg) {
 
         super(parent,"Error",true);
         label = new JLabel(msg);
@@ -22,6 +22,7 @@ public class Error extends JDialog {
         add(label, BorderLayout.CENTER);
         add(btn, BorderLayout.SOUTH);
         pack();
+        setResizable(false);
         setLocationRelativeTo(parent);
     }
 }

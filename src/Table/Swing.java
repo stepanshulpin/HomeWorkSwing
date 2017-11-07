@@ -60,7 +60,7 @@ public class Swing extends JFrame {
         btnAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Dialog dialog = new Dialog(Swing.this);
+                Dialog dialog = new Dialog(Swing.this, "Add");
                 dialog.setVisible (true);
                 Book book = dialog.getBook();
                 if(book!=null)
